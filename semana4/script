@@ -1,0 +1,257 @@
+#título: "Semanana5_Distribuiciones_&_Teorema"
+#Autor: "Jose Méndez Riveros"
+
+
+help(distributions)
+
+help("dexp")
+
+help(rnorm) #¿Qué hace *rnorm*?
+
+#Consideremos un macho heterocigoto y una hembra heterocigota, que se cruzan y tienen 8 hijos. ¿Cuál es la probabilidad  de que 5 hijos sean  de genotipo bb?En este punto debemos preguntarnos: ¿Cuál es el factor de éxito? : Ser bb ¿Cúal es el fracaso? 
+#No ser bb ¿Cuál es a probabilidad de ser bb en este cruce? 0.25 
+# la probabilidad de tener éxito ¿Cúantos hijos totales? 8 ¿Por cuantos hijos pregunto? 5
+
+# Cúal es la probabilidad de que 5 individual sean bb
+#de 5 o más, no me cuenta 5
+dbinom(5, size = 8, prob =0.25) #probabilidad puntual
+
+dbinom(0:8, size = 8, prob =0.25) #probabilidad de cada hijo en cada una de las probabilidades.
+
+plot(0:8,dbinom(0:8, size = 8, prob =0.25))
+
+# ¿Cúal es la probabilidad de que 5 o menos  sean bb? 5,4, 3, 2, 1 o 0 
+## de 5 o menos, no cuento 5
+pbinom(5, size = 8, prob =0.25)#probabilidad acumulada
+
+# ¿Cúal es la probabilidad de que más de 5  sean bb
+1 - pbinom(5, size = 8, prob =0.25) #probabilidad acumulada de 5 a más hijos
+
+pbinom(5, size = 8, prob =0.25,lower.tail=FALSE) #*lower.tail=FALSE* él mismo hace la resta
+?pbinom ## *lower.tail* es por defecto TRUE-> menos o igual a x, pero si es FALSE es solo mayor.
+
+# ¿Cúal es el percentíl 90?
+qbinom(0.9, 8, 0.25) #la probabilidad de tener 4 o menos hijos 
+
+
+#### Ejer: ¿Cúal es la probabilidad de que 3 sean de fenotipo blanco?
+pbinom(3, 8, 0.25) #la probabilidad de que 3 hijos de 8 sean blancos *genotipo bb*
+
+
+##Distribución de Poison
+#eventos muy extraños
+
+#Por ejemplo, en un terreno de 10 m2 se divide en cuadrículas o bloques de 1 cm2. 
+#Se esparcen semilla (en términos de miles) y el promedio de semillas en cada cuadrícula es de 1.5.
+
+# Cúal de que en un bloque hayan 2 semillas
+dpois( 2, 1.5) #un supuesto lambda=1,5 es el promedio  
+
+plot(dpois(0:20,1.5))
+
+# ¿Cúal es la probabilidad de encontrar 5 o menos semillas en un bloque?
+ppois( 5 , 1.5) #usando la función *p* 
+
+# ¿Cúal es la probabilidad de encontrar 8 o más semillas en un bloque?
+1 - ppois(8, 1.5) #se puede usar *lower.tail=FALSE*
+
+# ¿Cúal es el percentíl 90?
+qpois(0.6,1.5)
+
+
+#### Ejer:  ¿Cúal es la probabilidad de encontrar 6 semillas por bloque?, si el terreno es más pequeño (2x2m) 
+#y el promedio de semillas por bloque es de 10 Grafique todos los eventos de 0 a 50
+
+dpois(6,10) #probabilidad de encontrar 6 semillas en un bloque 1x1m de un terreno de 2x2m, con un promedio de 10
+
+plot(dpois(0:50,10))
+
+
+
+
+##Variables aleatorias o distribuciones continuas
+#Por ahora, solo veremos cómo calcular probabilidades bajo esta distribución.
+
+#Supongamos un muestreo de alturas de mujeres en Colombia.
+
+# Muestra
+x<-abs(rnorm(30, 165, 4))# *abs* valores absolutos, *rnorm* tamaño, media y sd
+x
+
+#Cúal es la probailidad de encontrar mujeres con alturas menores a 160cm
+pnorm(160, 165, 4)  
+
+#Cúal es la probailidad de encontrar mujeres con alturas mayores a 170cm
+pnorm(170, 165, 4,lower.tail = FALSE)
+
+#Cúal es la probailidad de encontrar mujeres con alturas mayores a 160cm
+pnorm(160, 165, 4,lower.tail = FALSE)
+
+#Cúal es la probailidad de encontrar mujeres con alturas entre 150cm y 170cm
+pnorm(170, 165, 4) - pnorm(150, 165, 4)
+
+#Cúal es la probailidad de encontrar mujeres con alturas entre 170cm y 190cm
+pnorm(190, 165, 4) - pnorm(170, 165, 4)
+
+#Graficar
+curve(dnorm(x, 165, 4), 145, 200, main = "Alturas de mujeres colombianas")
+
+
+
+library(ade4)
+
+data("carniherbi49")
+class(carniherbi49)
+
+head(carniherbi49$tab2)
+class(carniherbi49$tab2)
+
+# Carnivoros
+
+pesos <- carniherbi49$tab2$bodymass[which(carniherbi49$tab2$clade== 'Carnivore')]
+
+mean <- mean(carniherbi49$tab2$bodymass[which(carniherbi49$tab2$clade== 'Carnivore')]) #quienes en la columna clade son carnívoros
+
+sd <-sd(carniherbi49$tab2$bodymass[which(carniherbi49$tab2$clade== 'Carnivore')])
+
+pnorm(1.5, meanC, sdC) #acumulado, cuales son los que tienen masas menores iguales a 1.5
+
+hist(pesos)  #según la gráfica, estos datos no se ajustan a una distribución normal
+
+# Herbivore
+
+pesosherb <- carniherbi49$tab2$bodymass[which(carniherbi49$tab2$clade== 'Herbivore')]
+
+meanherb <- mean(pesosH)
+
+sdHerb <-sd(pesosH)
+
+pnorm(1.5, meanH, sdH)  
+
+hist(pesosH)  
+
+####Ejer: A partir del tortues del paquete ade4, calcule el promedio y la desviación estándar 
+#de las alturas de caparazones de las tortugas. Haga el análisis por sexo y grafíquelo.
+
+data(tortues)
+
+tortues
+#promedio de las alturas de caparazones de tortugas por sexo
+aggregate(tortues$larg,by = list(tortues$sexe), FUN = mean) 
+#desviación estandar de las alturas de caparazones de tortugas por sexo
+aggregate(tortues$larg,by = list(tortues$sexe), FUN = sd)
+#aplicar la función *mean()* a cada sexo
+mean_larg <- tapply(tortues$long, tortues$sexe, mean)
+mean_larg
+#graficar la media
+barplot(mean_larg, col = c("orange","cyan"))
+
+#aplicar la función *sd()* a cada sexo
+sd_larg <- tapply(tortues$long, tortues$sexe, sd)
+sd_larg
+#graficar la media
+barplot(sd_larg, col = c("red","green"))
+
+#Existen otro tipo de distribuciones que pueden modelar fenómenos biológicos cómo uniforme, gamma, log-normal. 
+#Uno de los más usados en campos como ecología son los modelos de crecimiento poblacional.
+
+####Ejer: Lea el artículo sobre tipos de crecimientos poblacionales y 
+#escriba el código en R que mejor describa el ejemplo de las bacterias en crecimiento exponencial.
+
+Tamaño = c(100, 200, 400, 800, 1600)
+Horas =  0:4
+plot(Horas, Tamaño, main = "Crecimiento exponencial", type = "b")
+
+
+##Muestreo
+
+data(iris)
+
+# muestreo aleatorio simple sin repetición
+sinrepteción <- sample( 1:nrow( iris ), 55 )#crea un vector de 150 y se van a muestrear 55
+muestra <- iris[sin , ]
+
+# muestreo aleatorio simple con repetición
+conrepetición <- sample( 1:nrow( iris ), 60, replace = TRUE )
+
+# Muestreo estratificado
+
+library( sampling )
+help("strata")
+
+# muestreo estratificado sin repetición---- sin reemplazo
+estratos <- strata( iris, stratanames = c("Species"), size = c(20,20,20), method = "srswor" )#muestree 20 ind de cada estrato
+
+muestreo <- getdata( iris, estratos )
+
+
+# muestreo estratificado con repetición---- con reemplazo
+estratos <- strata( iris, stratanames = c("Species"), size = c(20,20,20), method = "srswr" )
+
+muestreo <- getdata( iris, estratos )
+
+##muestreo sistemático 
+
+#El muestreo sistemático consta de 4 pasos:
+#1: Ordenar mi lista de individuos (N) 2: Definir el tamaño de la muestra (n) 
+#3: Dividir N/n eso me dará el intervalo de muestreo (K) 4: Obtenemos un número aleatorio desde 1 hasta k (1er) 
+#5: Iniciamos en 1er y tomamos cada k hasta completar n
+#1. definir el tamaño de la muestra. 
+
+
+#N=30
+#n=10
+#k=N/N=3
+#primer paso=  1->K   1->3
+#USO LA FUNCIÓN SAMPLE, para rastrear 10 ind, en 3
+
+####Ejer: Simule 5000 peces de criadero en un tanque, todos son de la misma cohorte. 
+#Imagine que los organiza en fila y quiere seleccionar 100 para calcular estadísticos de la población. 
+#Haga un muestreo sistemático y calcule los estadísticos y descriptivos vistos anteriormente. 
+#Grafique.
+
+#N=5000
+#n=100
+#N/n=k
+#K=50 SE ESCOGE UN NÚMERO DE 1 A 50 CON *sample* 
+# de 1 a k y 1-3
+
+
+N <- 5000
+n <- 100
+k <- N/n
+k
+sample(1:k, 1)
+
+seq(29, 5000, 50)
+
+N <- 5000
+
+n <- 100
+
+k <- N/n
+k
+
+sample(1:k, 1)
+
+# Iniciamos en 1er y tomamos cada k hasta completar n
+x<- seq(29, 5000, 50)
+x
+#1ERO. SIMULAR CON RNORM. 
+long <- abs(rnorm(5000, 5, 3))
+long
+nuevo_long <- long[x]
+nuevo_long
+
+#TABLA 
+matriz_long <- cbind(1:5000, long)
+matriz_long[x, ] 
+
+n.matriz <- getdata(matriz_long, x)  
+n.matriz
+
+#Hacer una gráfica
+
+summary(nuevo_long)
+hist(nuevo_long, main = "Tallas de peces", xlab ="Length", ylab = "Frecuency", col = "cyan")  
+
