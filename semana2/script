@@ -1,0 +1,515 @@
+title: "Semana 2 - Variables y Frecuencias"
+author: "Jose Méndez Riveros"
+date: "September 30, 2019"
+
+## Variables en R
+
+# Ver los set de datos para los paquetes cargado actualmente
+
+data()
+
+# Ver los set de datos para todos los paquetes instalados
+
+data(package = .packages(all.available = TRUE))
+
+##Para poder acceder a algunos datos que usaremos el resto de prÃ¡cticas debemos primero instalar/cargar algunos paquetes.
+
+library(ape)
+library(permute)
+library(vegan)
+library(ade4)
+library(geiger)
+
+#Tablas de datos que vienen por defecto en estos paquetes
+
+# Paquete ape
+data(carnivora)
+
+#Paquete permute
+data(jackal)
+
+#Paquete vegan
+data(jackal)
+
+data(BCI)
+
+data(mite.env)
+
+#Paquete ade4
+data(atlas)
+
+data(carniherbi49)
+
+data(corvus)
+
+data(tortues)
+
+#Paquete geiger
+data(geospiza)
+
+**Ejer:** Â¿Que clase de objeto es BIC? Â¿QuÃ© clase de objeto es geospiza? use la funciÃ³n *str* para obtener informaciÃ³n sobre la estructura.
+
+#clase de objeto de BIC
+
+class(BIC) 
+
+#Clase de objeto de geospiza
+
+class(geospiza)
+
+#estructura de BIC y geospiza 
+
+str(BIC)
+str(geospiza)
+
+######Objetos tipo lista
+
+# Clase
+class(geospiza)
+
+
+#Estructura
+str(geospiza)
+
+# ¿Qué es geospiza?
+help("geospiza")
+
+####Objetos s3
+
+# Para acceder al segundo objeto solo hay que mirar la estructura
+
+geospiza$geospiza.data
+
+# Para extraer un objeto dentro de esta tabla solo hay que asignar la posiciÃ³n
+
+geospiza$geospiza.data[,1]
+###Ejer: Que tipo de variable es tarsusL y que clase?  Abra el objeto *tortues* y mire Â¿QuÃ© tipo de variables tiene y quÃ© clase son?, haga lo mismo con el objeto *mite.env* y revise Â¿QuÃ© tipo de variable es *shurb* y quÃ© clase es? Recuerde siempre usar help para saber de donde vienen los datos.
+
+
+help(tortues)
+#¿Qué tipo de variable es tortues?
+typeof(tortues)
+
+#clase es tortues
+class(tortues)
+
+help(mite.env)
+#tipo de variable es mite.env
+typeof(mite.env)
+
+#¿Qué clase es mite.env?
+class(mite.env)
+
+#mirar la proporción de sexos en un muestreo
+# Semilla
+set.seed(1)
+
+#sexos
+sex <- c('F', 'M')
+
+# Inventemos una muestra con las mismas probabilidades de sacar un Macho o una Hembra
+
+pop1 <- sample(x = sex, size = 50,replace = T,prob = c(0.5,0.5))
+
+pop1 
+
+####imaginemos que pop1 es real y queremos saber cuÃ¡l es la razÃ³n de sexos en la muestra
+
+M <- length(which(pop1 == 'M'))
+
+M
+
+F <- length(which(pop1 == 'F'))
+
+F
+
+# la razón es
+
+paste(F,'/',M,sep = '')
+
+# 0
+
+F/M
+
+#Qué pasaria si se encontraran más hembras que machos
+
+# Semilla
+set.seed(1)
+
+#sexos
+sex <- c('F', 'M')
+
+sex
+
+# Inventemos una muestra con las mismas probabilidades de sacar un Macho o una Hembra
+
+pop2 <- sample(x = sex, size = 50,replace = T,prob = c(0.8,0.2))
+
+pop2
+
+# imaginemos que pop1 es real y queremos saber cual es la razon de sexos en la muestra
+
+M <- length(which(pop1 == 'M'))
+
+M
+
+F <- length(which(pop1 == 'F'))
+
+F
+
+# la razón es
+paste(F,'/',M,sep = '')
+
+# 0
+
+F/M
+
+##Ejer: usando el data.frame *tortues* calcule la proporcion de hembras y machos de la muestra
+
+Masculinos.tortues <- length(which(tortues == 'M'))
+Masculinos.tortues
+
+Femeninos.tortues <- length(which(tortues == 'F'))
+Femeninos.tortues
+
+paste(Femeninos.tortues, '/', Masculinos.tortues, sep = '')
+Femeninos.tortues/Masculinos.tortues
+
+tortues
+
+Tambien podemos generar la proporcion entre dos medidas, por ejemplo el ancho y el largo para obtener una variable derivada que represente la forma.
+
+
+# Imaginemos que tomamos medidas de crÃ¡neos de lagarto
+
+Ancho<-rnorm(n = 32,mean = 10,sd = 1)
+
+Ancho
+
+Largo <- rnorm(n = 32,mean = 15,sd = 1)
+
+Largo
+
+# Construimos la tabla con medidas imaginarias
+medidas<-cbind(Ancho, Largo)
+
+medidas
+
+Tabla_medidas <- as.data.frame(cbind(paste('spp',1:32,sep = '_'),medidas))
+
+# tabla sin colnames
+
+Tabla_medidas
+
+# asigne nombres a las columnas
+
+colnames(Tabla_medidas) <- c('Individuos', 'Ancho','Largo')
+
+Tabla_medidas
+
+# Relación ancho/largo
+
+prp <- Ancho/Largo
+
+prp 
+
+Tabla_medidas_prp <- cbind.data.frame(Tabla_medidas, prp)
+
+Tabla_medidas_prp 
+
+####Ejer: usando el data.frame *tortues* calcule la proporción entre el ancho y el largo del caparazón, genere una tabla con la información de *tortues* y la nueva variable derivada.
+caparazon <-cbind(tortues$long, tortues$larg)
+
+caparazon
+
+tabla.tortues <- as.data.frame(cbind(paste('spp',1:48,sep = '_'),caparazon))
+
+colnames(tabla.tortues) <- c('Individuos', 'largo','ancho')
+
+tabla.tortues
+
+prop.tortues <- tortues$larg/tortues$long
+
+prop.tortues
+
+Tabla.prop <- cbind.data.frame(tabla.tortues, prop.tortues)
+
+Tabla.prop 
+
+## Tablas
+
+###Una herramienta util para ver la frecuencia o el conteo de una variable es la función *table*; adicionalmente, podemos obtener la fracción de cada objeto con relación al total del muestreo.
+
+# Conteo o frecuencia
+
+freq<-table(mite.env$Substrate)
+
+freq
+
+# Fracción
+prop.table(freq)
+
+# Las proporciones pueden ser visualizadas usando la función *pie*
+pie(prop.table(freq))
+
+
+#####Ejer:Cuantas especies de *Corvus* fueron muestreadas en la región Paleartica-Africana? Use el data.frame del gÃ©nero *Corvus*. Â¿QuÃ© porcentaje de *Corvus* muestreados habitan zonas abiertas
+
+help(corvus)
+
+frecuencia <- table(corvus$phylog)
+frecuencia
+
+prop.table(frecuencia)
+
+pie(prop.table(frecuencia))
+
+frec_zona <- table(corvus$habitat)
+frec_zona
+
+#¿Cuántas especies de *Corvus* fueron muestreadas en la región Paleártica-Africana?  
+#Respuesta= 9
+
+#¿Qué porcentaje de *Corvus* muestreados habitan zonas abiertas?
+#Respuesta = 17
+
+#####Distribución de frecuencias
+
+# Sustrato de Orbatidos
+
+# freq era la tabla de frecuencias construida anteriormente
+freq
+
+mite.env$Substrate
+
+# Graficar las frecuencias de cada sustrato
+plot(freq)
+
+#####¿Cómo luce el gráfico de frecuencias para los tipos de hábitat del género *Corvus*?
+
+frec_zona
+
+plot(frec_zona)
+
+#si las variables son cuantitativas, los valores deben ser dispuestos en rangos que permitan observar el comportamiento de las frecuencias.
+
+#Primero, debemos generar una tabla de frecuencias
+
+# Sumar las ocurrencias de cada especie
+atlas$birds
+
+xsp<- apply(atlas$birds,2,sum)
+
+# ¿Cuál es el mínimo 
+min(xsp)
+
+which.min(xsp)
+
+
+xsp[which.min(xsp)]
+
+# generar vectores
+
+min(xsp)
+
+x <- which.min(xsp)
+
+
+xsp[x]
+
+#Ejer:encuentre el maximo, así como lo hizo para el minimo
+
+max(xsp)
+y <- which.max(xsp)
+
+xsp[y]
+
+
+max(xsp)
+
+which.max(xsp)
+
+
+xsp[which.max(xsp)]
+
+# poodemos graficar la frecuencia de cada especies
+plot(as.table(xsp))
+
+max(xsp)
+
+which.max(xsp)
+
+
+xsp[which.max(xsp)]
+
+# poodemos graficar la frecuencia de cada especies
+plot(as.table(xsp))
+
+####Cuando hablamos de variables de medida como longitud ancho etc, podemos hacer lo mismo pero organizando los valores en rangos.
+
+# Longitud de las tortugas
+tortues$long
+
+# no tendra sentido, debemos organizar en rangos
+table(tortues$long)
+
+# Preguntar cual es el minimo 
+min(tortues$long)
+
+# Preguntar cual es el maximo
+
+max(tortues$long)
+
+
+# La función rangos nos permite ver directamente el rango
+
+range(tortues$long)
+
+##Dado que el maximo es 177 y el minimo es 93, Podríamos decir que nuestra muestra estará en un rango de 92.5 a 177.5Podemos crear una lista de rangos a partir de esta información
+
+# genere las cajas
+
+bins <- seq(92.5,182.5,10)
+
+# Agrupe los datos en las cajas
+
+datos<- cut(tortues$long,bins)
+
+# genere la tabla de frecuencias
+freq_long<-table(datos)
+
+# Usamos transfrom para generar un data.frame de frecuencias
+transform(freq_long)
+
+# Podemos usarlo para adicionar mas información a cada rango. Freq es una variable interna 
+# generada a partir de transform(freq_long)
+
+transform(freq_long, Relativ= prop.table(Freq), Acum= cumsum(Freq))
+
+###Para poder visualizar estos datos, nosotros podemos asignar el vector crudo a la funciÃ³n *hist* o utilizar los rangos generados anteriormente.
+
+
+# Histograma a partir de datos crudos
+
+hist(tortues$long)
+
+# Histograma definiendo las cajas 
+
+hist(tortues$long, breaks = bins, main = 'Longitudes de caparazón')
+
+###Ejer: Repita el ejercicio para las variables continuas de tamaño de pico y tamaño del ala en el género *Corvus*. Busque como cambiar colores, ejes y algunas propiedades que le permitan mejorar el diseño del histograma. ahora, Invente unos datos de medidas, como se hizo en el caso de los craneos, y genere todo el ejercicio hasta el histograma. Busque otro tipo de distribuciones para generar las variables [ejemplo][3]. Busque en quÃ© casos sirve cada distribución o para que se usan.
+
+corvus$wing
+
+table(corvus$wing)
+
+min(corvus$wing)
+
+max(corvus$wing)
+
+range(corvus$wing)
+
+corvus.bins <- seq(225.5, 475.5, 10)
+
+datos_Corvus <- cut(corvus$wing,corvus.bins)
+
+freq_wing <-table(datos_Corvus)
+
+transform(freq_wing)
+
+hist(corvus$wing)
+
+hist(corvus$wing, breaks = corvus.bins, main = 'Tamaño del ala')
+
+##Ejer: Invente unos datos de medidas, como se hizo en el caso de los craneos, y genere todo el ejercicio hasta el histograma. Busque otro tipo de distribuciones para generar las variables [ejemplo][3]. Busque en quÃ© casos sirve cada distribuciÃ³n o para quÃ© se usan.
+
+####estaturas de 20 personas
+
+Height <- c(1.45, 1.50, 1.52, 1.53, 1.53, 1.56, 1.58, 1.60, 1.65, 1.67, 1.68, 1.70, 1.73, 1.75, 
+              1.76, 1.76, 1.77, 1.79, 1.79, 1.80)
+media <- mean(Height)
+media
+desv <- sd(Height)
+desv
+
+#densidad de los datos
+dnorm(170,media, desv)
+
+#probabilidad de que alguien tenga la altura de 170
+
+pnorm(170,media,desv)
+
+#altura respecto al 40% 
+qnorm(0.40,media,desv)
+
+#5 alturas aleatorias
+rnorm(5,media,desv)
+
+####PESO
+
+weight<- c(50, 59, 59, 62, 66, 70, 72, 59, 70, 65, 67, 82, 67, 76, 88, 82, 74, 59, 81, 68)
+weight
+
+meanweight <- mean(weight)
+meanweight
+desvweight <- sd(weight)
+desvweight
+
+
+#medidas; relación entre la estatura y peso en 20 personas 
+medidas1 <- cbind(Height, weight)
+medidas1
+
+Tabla.medidas1 <- as.data.frame(cbind(paste('ind',1:20,sep = ''),medidas1))
+
+colnames(Tabla.medidas1) <- c('N°', 'Height(m)','weight(Kg)')
+
+Tabla.medidas1
+
+#Cálculo 
+IndiceMasaCorp <- weight/Height^2 
+IndiceMasaCorp
+IndiceMasaCorp <- round(IMC_1, digits = 2)
+IndiceMasaCorp
+
+Tabla_medidas_IMC <- cbind.data.frame(Tabla.medidas1, IndiceMasaCorp)
+Tabla_medidas_IMC
+
+#cúal es el valor mínimo de Indice de masa corpo y a que individuo corresponde
+min(Tabla_medidas_IMC$IndiceMasaCorp)
+which.min(Tabla_medidas_IMC$IndiceMasaCorp)
+Tabla_medidas_IMC$`N°`[which.min(Tabla_medidas_IMC$IndiceMasaCorp)]
+
+#cúal es el valor máximo de IMC y a cuál individuo corresponde
+max(Tabla_medidas_IMC$IndiceMasaCorp)
+which.max(Tabla_medidas_IMC$IndiceMasaCorp)
+Tabla_medidas_IMC$`N°`[which.max(Tabla_medidas_IMC$IndiceMasaCorp)]
+
+#MEDIA, DESVIACIÓN ESTANDAR
+media_IMC <- mean(Tabla_medidas_IMC$IndiceMasaCorp)
+media_IMC
+desv_IMC<- sd(Tabla_medidas_IMC$IndiceMasaCorp)
+desv_IMC
+
+#probabilidad de que alguien tenga 20 IMC
+
+pnorm(24,media_IMC,desv_IMC)
+
+#rango
+range(Tabla_medidas_IMC$IndiceMasaCorp)
+
+listofranges<- seq(18.1,30.5)
+listofranges
+
+datos_IMC <- cut(Tabla_medidas_IMC$IndiceMasaCorp,listofranges)
+datos_IMC
+
+#tabla de frecuencias
+freq.Indicemasacorp<-table(datos_IMC)
+freq.Indicemasacorp
+
+transform(freq_Indicemasacorp)
+
+hist(Tabla_medidas_IMC$IndiceMasaCorp)
+
+hist(Tabla_medidas_IMC$IndiceMasaCorp, breaks = listofranges, main = 'ÍNDICE MASA CORPORAL',col = ("orange"))
