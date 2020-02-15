@@ -1,0 +1,845 @@
+#Título: "Semana3_DescriptoresyMedidas"
+#Autor: "Jose Méndez Riveros
+
+## Objetivos
+
+
+## Medidas de tendencia central
+
+### Media o promedio
+data(iris)
+
+iris
+
+# Sumatorio de las longitud del pÃ©talo de la especie setosa
+pl.Setosa <- sum(iris$Petal.Length[which(iris$Species=='setosa')])
+
+pl.Setosa
+
+#  ¿Cuál es la longitud de la muestra?
+
+dim(iris)
+
+length(iris) #número de columnas 
+
+nrow(iris) #número de filas
+
+length(iris$Petal.Length)
+
+length(iris$Petal.Length[which(iris$Species=='setosa')])
+
+# n de nuestra pregunta
+n<-length(iris$Petal.Length[which(iris$Species=='setosa')])
+
+n
+
+# média aritmética 
+promedio<- pl.Setosa/n
+
+promedio
+
+mi.promedio <- function(x) {
+  
+  mi.suma<- sum(x)
+  mi.n<-length(x)
+  mi.prom <- mi.suma/mi.n
+  return(mi.prom)
+}
+mi.promedio(x= iris$Petal.Length[which(iris$Species=='setosa')])
+
+mean(iris$Petal.Length[which(iris$Species=='setosa')])
+
+hist(iris$Petal.Length[which(iris$Species=='setosa')])
+
+####**Ejer:** Si la columna iris$Petal.Length tuviera valores 'NA', ¿cómo podría eliminarlos 
+#antes de hacer la estimación de la media?
+
+
+
+iris[!is.na(iris$Petal.Length),] #!is.na para eliminar valores na
+
+
+
+####Estime la media aritmética de la altura, la longitud y el ancho del caparazón de las tortugas pintadas [data(tortues), paquete: *ade4*], 
+#use la función apply para obtener los estadíticos de cada medida en un mismo vector.
+
+library(ade4)
+data(tortues)
+tortues
+
+media_caparazón <- apply(tortues[,1:3], 2, mean) #media de las columnas del 1 al 3 (altura, longitud y ancho)
+media_caparazón
+
+
+## OTRAS MEDIAS
+library(psych)
+
+#MEDIA ARMÓNICA.
+
+harmonic.mean(iris$Petal.Length[which(iris$Species=='setosa')])
+
+#MEDIA GEOMÉTRICA.
+
+geometric.mean(iris$Petal.Length[which(iris$Species=='setosa')])
+
+
+## MEDIANA
+# Voy a escribir mis datos de trabajos en un objeto llamado setosa
+
+setosa <- iris$Petal.Length[which(iris$Species=='setosa')]
+
+# Ordenar
+
+sort(setosa)
+
+# longitud de setosa
+n
+
+# Mediana Es el punto medio del vector
+
+median(setosa)
+
+####**Ejer:** Genere una función propia que le permita encontrar la mediana, tal y como lo hizo 
+#con la media aritmética.
+
+mediana_par <- function(x) {
+  
+  orden <- sort(x)
+  (orden[length(x)/2]+ orden[(length(x)/2)+1])/ 2
+}
+
+median(setosa)
+mediana_par(setosa)
+
+
+##MODA
+# moda estadística?
+mode(setosa)
+
+# en este punto hay que generar la función
+
+freq <- table(setosa)
+freq
+
+freq[which.max(freq)]
+
+####**Ejer:** Genere una función propia que le permita calcular la moda.
+
+moda_1 <- function(x) {FREC <- table(x)
+frec_moda <- FREC[which.max(FREC)]
+return(frec_moda)}
+
+
+moda_1(setosa)
+
+
+# Rango = x
+range(setosa)
+
+# Freq = y
+min(freq)
+max(freq)
+
+# distribuciÃ³n de frecuencias de setosa
+hist(setosa, # histogram
+     col = "peachpuff", # column color
+     border = "black", 
+     prob = TRUE, # show densities instead of frequencies
+     xlim = c(0.5,2.5),
+     xlab = "Longitud de pétalo",
+     main = "Frecuencias de longitud de pétalo de setosa")
+lines(density(setosa),
+      lwd = 2, # thickness of line
+      col = "chocolate3") # Generar la distribuciÃ³n continua distribuciÃ³n de masa a partir de los datos observados
+
+# Graficar la media
+abline(v = mean(setosa),
+       col = "royalblue",
+       lwd = 2)
+
+#graficar la mediana
+abline(v = median(setosa),
+       col = "red",
+       lwd = 2)
+
+#poner la leyenda
+legend(x = "topright", # location of legend within plot area
+       c("Density plot", "Mean", "Median"),
+       col = c("chocolate3", "royalblue", "red"),
+       lwd = c(2, 2, 2))
+####**Ejer:** Después de generar la función del cálculo de moda, grafíquela sobre el histograma.
+
+#graficar la moda.
+abline(v = 1.4,
+       col = "springgreen1",
+       lwd = 2)
+
+#poner la leyenda con la moda
+legend(x = "topright", # location of legend within plot area
+       c("Density plot", "Mean", "Median", "Mode"),
+       col = c("chocolate3", "royalblue", "red", "springgreen1"),
+       lwd = c(2, 2, 2, 2))
+
+mean(setosa) #media
+median(setosa) #mediana
+moda_1(setosa) #moda
+
+##Medidas de posición
+
+# moda estadísstica?
+density(setosa)
+
+# Cuantíl
+
+quantile(setosa)
+
+# Longitudes menores o iguales al 80%
+quantile(setosa,probs = 0.8)
+
+
+# Cuartíl
+quantile(setosa,probs = c(seq(0, 1, 0.25)))
+
+####**Ejer:** Genere los cuantiles en intervalos de 0.5
+#Existen otras funciones que nos permiten generar cuartiles, incluyendo informaciÃ³n de tendencias centrales. 
+#Es decir, *density()* pero más resumido.
+
+quantile(setosa, probs = c(seq(0,1, 0.5)))
+
+
+
+# summary
+summary(setosa)
+
+# Lo interesante no es summary, es cómo estraer información de acá y poderlo graficar
+
+str(summary(setosa))
+x <- summary(setosa)
+class(x)
+# Obtener minimo 
+x[1]
+
+# distribuciÃ³n de frecuencias de setosa
+hist(setosa, # histogram
+     col = "grey80", # column color
+     border = "black", 
+     prob = TRUE, # show densities instead of frequencies
+     xlim = c(0.5,2.5),
+     xlab = "Longitud de pétalo",
+     main = "Frecuencias de longitud de pétalo de setosa")
+lines(density(setosa),
+      lwd = 2, # thickness of line
+      col = "chocolate3") # Generar la distribuciÃ³n continua distribuciÃ³n de masa a partir de los datos observados
+
+# Graficar la media
+
+abline(v = x[2],
+       col = "red1",
+       lwd = 2)
+
+abline(v = x[3],
+       col = "red4",
+       lwd = 2)
+
+abline(v = x[4],
+       col = "blue",
+       lwd = 2)
+
+abline(v = x[5],
+       col = "red1",
+       lwd = 2)
+
+legend(x = "topright", # location of legend within plot area
+       c("Density plot","1st Qu", "Mean", "Median","3st Qu" ),
+       col = c("chocolate3", "royalblue", "red"),
+       lwd = c(2, 2, 2))
+
+# aggregate() *permite asignar una operación sobre los niveles de una variable.
+
+aggregate(iris[,1:4], list(Especies = iris$Species), mean)
+
+####**Ejer:** ¿Qué sucede si el número de columnas deseado no se especifica? 
+#Obtenga la mediana, la moda y los cuantiles para cada especie de iris y para cada variable morfométrica.
+
+aggregate(iris[,], list(Especies = iris$Species), mean)
+#Si no se especifica el número de columnas deseado, aparece la columna de espcies y como no tiene 
+#valores numéricos, sale *NA*
+
+#mediana de cada especie de irir para cada variable morfométrico
+aggregate(iris[,1:4], list(Especies = iris$Species), median) 
+
+#moda de cada especie de irir para cada variable morfométrico
+aggregate(iris[,1:4], list(Especies = iris$Species), moda_1)
+
+
+##Medidas de dispersión 
+# voy a campo y mido dos poblaciones de pájaros
+pop1 <-abs(rnorm(200,mean = 6,sd = 1))
+
+pop2 <-abs(rnorm(200,mean = 6,sd = 5))
+
+
+pops<-cbind(pop1,pop2)
+pops
+
+
+##varianza y desviación estándar
+
+# Varianza
+apply(pops,2,var)
+
+# SD
+
+apply(pops,2,sd)
+
+plot(density(pops[,1]))
+
+plot(density(pops[,2]))
+
+summary(pops)
+
+boxplot(x = pops,notch=T)
+
+####**Ejer:** grafique la distribución de frecuencias de cada población usando histograma y densidad 
+#en el mismo gráfico. Adiciones la media, la mediana y la moda.
+
+#usar summary
+p <- summary(pop1)
+
+# distribuciÃ³n de frecuencias de setosa
+hist(pop1, # histogram
+     col = "darkolivegreen1", # column color
+     border = "black", 
+     prob = TRUE, # show densities instead of frequencies
+     xlim = c(0,10),
+     xlab = "frecuencias",
+     main = "Frecuencias de la población 1")
+lines(density(pop1),
+      lwd = 2, # thickness of line
+      col = "firebrick") # Generar la distribuciÃ³n continua distribuciÃ³n de masa a partir de los datos observados
+
+# Graficar la media
+abline(v = p[3],
+       col = "darkorange",
+       lwd = 2)
+
+#graficar la mediana
+abline(v = p[4],
+       col = "deepskyblue4",
+       lwd = 2)
+
+#hallar la moda
+moda_1(pop1)
+
+#graficar la moda
+abline(v = 2.95368363584842,
+       col = "red",
+       lwd = 2)
+
+legend(x = "topright", # location of legend within plot area
+       c("Density plot", "Mean", "Median","Moda" ),
+       col = c("firebrick", "darkorange", "deepskyblue4", "red"),
+       lwd = c(2, 2, 2))
+
+
+#graficar la población 2
+p2 <- summary(pop2)
+
+hist(pop2, # histogram
+     col = "antiquewhite", # column color
+     border = "black", 
+     prob = TRUE, # show densities instead of frequencies
+     xlim = c(0,20),
+     xlab = "frecuencias",
+     main = "Frecuencias de la población 2")
+lines(density(pop2),
+      lwd = 2, # thickness of line
+      col = "chartreuse") # Generar la distribuciÃ³n continua distribuciÃ³n de masa a partir de los datos observados
+
+# Graficar la media
+abline(v = p2[3],
+       col = "darkmagenta",
+       lwd = 2)
+
+#graficar la mediana
+abline(v = p2[4],
+       col = "dodgerblue",
+       lwd = 2)
+
+#hallar la moda
+moda_1(pop2)
+
+#graficar la moda
+abline(v = 0.0288382961023661,
+       col = "darkgoldenrod1",
+       lwd = 2)
+
+legend(x = "topright", # location of legend within plot area
+       c("Density plot", "Mean", "Median","Moda" ),
+       col = c("chartreuse", "darkmagenta", "dodgerblue", "darkgoldenrod1"),
+       lwd = c(2, 2, 2))
+
+#Estos estadÃ�sticos descriptivos pueden ser resumidos en una tabla usando la funciÃ³n describe(). 
+#Para mÃ¡s informaciÃ³n podemos ir a ayuda para poder ver los parÃ¡metros de la funciÃ³n.
+
+
+help("describe")
+
+
+# Para las dos columnas quÃ© representan poblaciones
+describe(pops)
+
+##medidad de forma
+
+# Podemos ver lo msmo para niveles internos
+
+for (i in 1:4){
+  
+  plot(density(iris[,i]), main = colnames(iris)[i])
+}
+
+##Asimetría
+#cálculo
+
+library(EnvStats)
+
+skewness(pops[,1], na.rm = FALSE, method = "fisher")
+
+plot(density(pops[,1]), main= 'Pop1')
+abline(v= mean(pops[,1]))
+
+skewness(pops[,2], na.rm = FALSE, method = "fisher")
+
+plot(density(pops[,2]), main= 'Pop3')
+abline(v= mean(pops[,2]))
+
+aggregate(iris[,1:4],list(Especies= iris$Species), skewness, na.rm = FALSE, method = "fisher")
+
+set.seed(999)
+n.sample <- rnorm(n = 10000, mean = 55, sd = 4.5)
+
+skewness(n.sample, na.rm = FALSE, method = "fisher")
+plot(density(n.sample), main= 'Pop3')
+abline(v= mean(n.sample))
+
+
+### Medidas de Apuntamiento
+
+### Curtosis
+
+apply(pops,2,kurtosis)
+
+kurtosi(iris$Sepal.Length[which(iris$Species == 'setosa')])
+
+kurtosi(n.sample)
+
+# Podemos ver lo mismo que describe(), pero para niveles internos
+
+describe.by(iris[,1:4],group = iris$Species)
+####Ejer: Lea el resumen y las grÃ¡ficas del articulo de Magund 2007. 
+#Cargue los datos llamados '2007_EAA_Magud_et_al_data.csv' usando la funciÃ³n read.csv(). 
+#Estime todos los estadÃ�sticos vistos en esta prÃ¡ctica para las variables 'body length', 
+#'tubercles 1b apart' y 'tarsus I length'.
+#Grafique sus anÃ¡lisis y exportelos usando las funciones PNG o PDF. 
+#Escriba un pÃ¡rrafo de no mÃ¡s de 200 analizando lo que encontrÃ³. 
+
+read.csv("2007_EAA_Magud_et_al_data.csv")
+
+Poblaciones<-read.csv("2007_EAA_Magud_et_al_data.csv")
+View(Poblaciones)
+#########Traits A########
+I.BK<-Poblaciones$A[which(Poblaciones$Traits=='I BK')]
+I.BK
+II.BK<-Poblaciones$A[which(Poblaciones$Traits=='II BK')]
+II.BK
+I.IV<-Poblaciones$A[which(Poblaciones$Traits=='I IV')]
+I.IV
+II.IV<-Poblaciones$A[which(Poblaciones$Traits=='II IV')]
+II.IV
+#######I.BK#####
+sort(Poblaciones$A[which(Poblaciones$Traits=='I BK')])
+n
+median(I.BK)
+mode(I.BK)
+freq1 <- table(I.BK)
+freq[which.max(freq1)]
+range(I.BK)
+min(freq1)
+max(freq1)
+##########I.BK######
+hist(I.BK,col ="peachpuff",border = "black",prob = TRUE,xlim = c(100,300),xlab = "Longitud del cuerpo",main = "Frecuencias de longitud del cuerpo de I BK")
+lines(density(I.BK),lwd = 2, col = "chocolate3") 
+
+# Graficar la media
+abline(v = mean(I.BK),
+       col = "royalblue",
+       lwd = 2)
+
+abline(v = median(I.BK),
+       col = "red",
+       lwd = 2)
+abline (v = 154.04, col = "yellow", lwd = 2)
+legend(x = "topright", 
+       c("Density plot", "Mean", "Median", "Mode"),
+       col = c("chocolate3", "royalblue", "red","Yellow"),
+       lwd = c(2, 2, 2, 2))
+
+
+
+
+#######II.BK######
+sort(Poblaciones$A[which(Poblaciones$Traits=='II BK')])
+n
+median(II.BK)
+mode(II.BK)
+freq <- table(II.BK)
+freq[which.max(freq)]
+range(II.BK)
+min(freq2)
+max(freq2)
+
+##########II.BK#########
+hist(II.BK,col ="purple",border = "black",prob = TRUE,xlim = c(100,300),xlab = "Body length",main = "Frecuencias de longitud del cuerpo de II BK")
+lines(density(II.BK),lwd = 2, col = "chocolate3") 
+
+# Graficar la media
+abline(v = mean(II.BK),
+       col = "royalblue",
+       lwd = 2)
+
+abline(v = median(II.BK),
+       col = "red",
+       lwd = 2)
+abline (v = 149.58, col = "yellow", lwd = 2)
+legend(x = "topright", 
+       c("Density plot", "Mean", "Median", "Mode"),
+       col = c("chocolate3", "royalblue", "red","Yellow"),
+       lwd = c(2, 2, 2, 2))
+
+
+#####I.IV#######
+sort(Poblaciones$A[which(Poblaciones$Traits=='I IV')])
+n
+median(I.IV)
+mode(I.IV)
+freq <- table(I.IV)
+freq[which.max(freq)]
+range(I.IV)
+min(freq)
+max(freq)
+
+#######I.IV#######
+
+hist(I.IV,col ="cyan",border = "black",prob = TRUE,xlim = c(100,300),xlab = "Body length",main = "Frecuencias de longitud del cuerpo de I IV")
+lines(density(I.IV),lwd = 2, col = "chocolate3") 
+
+# Graficar la media
+abline(v = mean(I.IV),
+       col = "royalblue",
+       lwd = 2)
+
+abline(v = median(I.IV),
+       col = "red",
+       lwd = 2)
+abline (v = 179.5, col = "yellow", lwd = 2)
+legend(x = "topright", 
+       c("Density plot", "Mean", "Median", "Mode"),
+       col = c("chocolate3", "royalblue", "red","Yellow"),
+       lwd = c(2, 2, 2, 2))
+
+#####II.IV#####
+sort(Poblaciones$A[which(Poblaciones$Traits=='II IV')])
+n
+median(II.IV)
+mode(II.IV)
+freq<- table(II.IV)
+freq[which.max(freq)]
+range(II.IV)
+min(freq)
+max(freq)
+######II.IV######
+hist4<-hist(II.IV,col ="green",border = "black",prob = TRUE,xlim = c(100,300),xlab = "Body length",main = "Frecuencias de longitud del cuerpo de II IV")
+lines(density(II.IV),lwd = 2, col = "chocolate3") 
+
+# Graficar la media
+abline(v = mean(II.IV),
+       col = "royalblue",
+       lwd = 2)
+
+abline(v = median(II.IV),
+       col = "red",
+       lwd = 2)
+abline (v = 164.91, col = "yellow", lwd = 2)
+legend(x = "topright", 
+       c("Density plot", "Mean", "Median", "Mode"),
+       col = c("chocolate3", "royalblue", "red","Yellow"),
+       lwd = c(2, 2, 2, 2))
+
+
+
+
+
+
+
+
+######Traits P########
+I.BK.P<-Poblaciones$P[which(Poblaciones$Traits=='I BK')]
+I.BK:P
+II.BK.P<-Poblaciones$P[which(Poblaciones$Traits=='II BK')]
+II.BK.P
+I.IV.P<-Poblaciones$P[which(Poblaciones$Traits=='I IV')]
+I.IV.P
+II.IV.P<-Poblaciones$P[which(Poblaciones$Traits=='II IV')]
+II.IV.P
+
+#######I.BK.P#####
+sort(Poblaciones$P[which(Poblaciones$Traits=='I BK')])
+n
+median(I.BK.P)
+mode(I.BK.P)
+freq <- table(I.BK.P)
+freq[which.max(freq)]
+range(I.BK.P)
+min(freq)
+max(freq)
+
+hist(I.BK.P,col ="orange",border = "black",prob = TRUE,xlim = c(5,15),xlab = "Tubercles 1b Apart",main = "Frecuencias de Tubercles 1b apart, I BK")
+lines(density(I.BK.P),lwd = 2, col = "green") 
+
+# Graficar la media
+abline(v = mean(I.BK.P),
+       col = "blue",
+       lwd = 2)
+
+abline(v = median(I.BK),
+       col = "red",
+       lwd = 2)
+abline (v = 10.91, col = "yellow", lwd = 2)
+legend(x = "topright", 
+       c("Density plot", "Mean", "Median", "Mode"),
+       col = c("green", "royalblue", "red","Yellow"),
+       lwd = c(2, 2, 2, 2))
+
+
+
+#######II.BK.P######
+sort(Poblaciones$P[which(Poblaciones$Traits=='II BK')])
+n
+median(II.BK.P)
+mode(II.BK.P)
+freq <- table(II.BK.P)
+freq[which.max(freq)]
+range(II.BK.P)
+min(freq)
+max(freq)
+
+##########II.BK#########
+hist(II.BK.P,col ="cyan",border = "black",prob = TRUE,xlim = c(5,20),xlab = "Tubercles 1b apart",main = "Frecuencias de tubercles 1b apart, II BK")
+lines(density(II.BK),lwd = 2, col = "chocolate3") 
+
+# Graficar la media
+abline(v = mean(II.BK.P),
+       col = "royalblue",
+       lwd = 2)
+
+abline(v = median(II.BK.P),
+       col = "red",
+       lwd = 2)
+abline (v = 9.41, col = "yellow", lwd = 2)
+legend(x = "topright", 
+       c("Density plot", "Mean", "Median", "Mode"),
+       col = c("chocolate3", "royalblue", "red","Yellow"),
+       lwd = c(2, 2, 2, 2))
+
+#####I.IV.P#######
+sort(Poblaciones$P[which(Poblaciones$Traits=='I IV')])
+n
+median(I.IV.P)
+mode(I.IV.P)
+freq <- table(I.IV.P)
+freq[which.max(freq)]
+range(I.IV.P)
+min(freq)
+max(freq)
+mean(I.IV.P)
+
+hist(I.IV.P,col ="darkgoldenrod1",border = "black",prob = TRUE,xlim = c(8,17),xlab = "Tubercles 1b apart",main = "Frecuencias de Tubercles 1b apart, I IV")
+lines(density(I.IV.P),lwd = 2, col = "chocolate3") 
+
+# Graficar la media
+abline(v = mean(I.IV.P),
+       col = "blue",
+       lwd = 2)
+
+abline(v = median(I.IV.P),
+       col = "red",
+       lwd = 2)
+abline (v = 11.6, col = "cyan", lwd = 2)
+legend(x = "topright", 
+       c("Density plot", "Mean", "Median", "Mode"),
+       col = c("chocolate3", "royalblue", "red","green"),
+       lwd = c(2, 2, 2, 2))
+#####II.IV.P#####
+sort(Poblaciones$P[which(Poblaciones$Traits=='II IV')])
+n
+median(II.IV.P)
+mode(II.IV.P)
+freq <- table(II.IV.P)
+freq[which.max(freq)]
+range(II.IV.P)
+min(freq)
+max(freq)
+mean(II.IV.P)
+######II.IV######
+hist4<-hist(II.IV.P,col ="darkolivegreen1",border = "black",prob = TRUE,xlim = c(5,15),xlab = "tubercles 1b apart",main = "Frecuencias de Tubercles 1b apart, II IV")
+lines(density(II.IV.P),lwd = 2, col = "chocolate3") 
+
+# Graficar la media
+abline(v = mean(II.IV.P),
+       col = "blue",
+       lwd = 2)
+
+abline(v = median(II.IV.P),
+       col = "red",
+       lwd = 2)
+abline (v = 10.76, col = "yellow", lwd = 2)
+legend(x = "topright", 
+       c("Density plot", "Mean", "Median", "Mode"),
+       col = c("chocolate3", "blue", "red","Yellow"),
+       lwd = c(2, 2, 2, 2))
+
+I.BK.W<-Poblaciones$W[which(Poblaciones$Traits=='I BK')]
+I.BK.W
+II.BK.W<-Poblaciones$W[which(Poblaciones$Traits=='II BK')]
+II.BK.W
+I.IV.W<-Poblaciones$W[which(Poblaciones$Traits=='I IV')]
+I.IV.W
+II.IV.W<-Poblaciones$W[which(Poblaciones$Traits=='II IV')]
+II.IV.W
+#######I.BK.W#####
+sort(Poblaciones$W[which(Poblaciones$Traits=='I BK')])
+n
+median(I.BK.W)
+mode(I.BK.W)
+freq <- table(I.BK.W)
+freq[which.max(freq)]
+range(I.BK.W)
+min(freq)
+max(freq)
+##########I.BK.W######
+hist(I.BK.W,col ="coral",border = "black",prob = TRUE,xlim = c(1,10),xlab = "Tarsus length",main = "Frecuencias de Tarsus length  I BK")
+lines(density(I.BK.W),lwd = 2, col = "chocolate3") 
+
+# Graficar la media
+abline(v = mean(I.BK.W),
+       col = "royalblue",
+       lwd = 2)
+
+abline(v = median(I.BK.W),
+       col = "red",
+       lwd = 2)
+abline (v = 5.91, col = "yellow", lwd = 2)
+legend(x = "topright", 
+       c("Density plot", "Mean", "Median", "Mode"),
+       col = c("chocolate3", "royalblue", "red","Yellow"),
+       lwd = c(2, 2, 2, 2))
+
+
+
+
+#######II.BK.W######
+sort(Poblaciones$W[which(Poblaciones$Traits=='II BK')])
+n
+median(II.BK.W)
+mode(II.BK.W)
+freq <- table(II.BK.W)
+freq[which.max(freq)]
+range(II.BK.W)
+min(freq2)
+max(freq2)
+
+##########II.BK.W#########
+hist(II.BK.W,col ="aquamarine3",border = "black",prob = TRUE,xlim = c(1,10),xlab = "Tarsus length",main = "Frecuencias de Tarsus length II BK")
+lines(density(II.BK.W),lwd = 2, col = "chocolate3") 
+
+# Graficar la media
+abline(v = mean(II.BK.W),
+       col = "black",
+       lwd = 2)
+
+abline(v = median(II.BK.W),
+       col = "yellow",
+       lwd = 2)
+abline (v = 6.95, col = "green", lwd = 2)
+legend(x = "topright", 
+       c("Density plot", "Mean", "Median", "Mode"),
+       col = c("chocolate3", "black", "yellow","green"),
+       lwd = c(2, 2, 2, 2))
+
+
+#####I.IV.W#######
+sort(Poblaciones$W[which(Poblaciones$Traits=='I IV')])
+n
+median(I.IV.W)
+mode(I.IV.W)
+freq <- table(I.IV.W)
+freq[which.max(freq)]
+range(I.IV.W)
+min(freq)
+max(freq)
+
+#######I.IV.W#######
+
+hist(I.IV.W,col ="cornflowerblue",border = "black",prob = TRUE,xlim = c(1,10),xlab = "Tarsus length",main = "Frecuencias de Tarsus length I IV")
+lines(density(I.IV.W),lwd = 2, col = "chocolate3") 
+
+# Graficar la media
+abline(v = mean(I.IV.W),
+       col = "black",
+       lwd = 2)
+
+abline(v = median(I.IV.W),
+       col = "red",
+       lwd = 2)
+abline (v = 6.9, col = "yellow", lwd = 2)
+legend(x = "topright", 
+       c("Density plot", "Mean", "Median", "Mode"),
+       col = c("chocolate3", "black", "red","Yellow"),
+       lwd = c(2, 2, 2, 2))
+
+#####II.IV.W#####
+sort(Poblaciones$W[which(Poblaciones$Traits=='II IV')])
+n
+median(II.IV.W)
+mode(II.IV.W)
+freq<- table(II.IV.W)
+freq[which.max(freq)]
+range(II.IV.W)
+min(freq)
+max(freq)
+######II.IV.W######
+hist4<-hist(II.IV.W,col ="deeppink2",border = "black",prob = TRUE,xlim = c(1,10),xlab = "Tarsus length",main = "Frecuencias de Tarsus length II IV")
+lines(density(II.IV.W),lwd = 2, col = "green") 
+
+# Graficar la media
+abline(v = mean(II.IV.W),
+       col = "blue",
+       lwd = 2)
+
+abline(v = median(II.IV.W),
+       col = "cyan",
+       lwd = 2)
+abline (v = 6.5, col = "yellow", lwd = 2)
+legend(x = "topright", 
+       c("Density plot", "Mean", "Median", "Mode"),
+       col = c("green", "blue", "cyan","Yellow"),
+       lwd = c(2, 2, 2, 2))
+aggregate(Poblaciones[,c(2,17,22)],list(Populations=Poblaciones$Traits),summary)
+aggregate(Poblaciones[,c(2,17,22)],list(Populations=Poblaciones$Traits),sd)                                    
+aggregate(Poblaciones[,c(2,17,22)],list(Populations=Poblaciones$Traits),var)
+
+library(EnvStats)
+plot(x = Poblaciones$Traits,Poblaciones$A,xlab="Populations",ylab="Values",main="BODY LENGTH",col=c("blue","green","grey","red"))
+plot(Poblaciones$Traits,Poblaciones$P,xlab="Populations",ylab="Values",main= "TUBERCLES 1B APART",col=c("yellow","grey","blue","green"))
+plot(Poblaciones$Traits,Poblaciones$W,xlab="Populations",ylab="Values",main=  "TARSUS LENGTH I",col= c("cyan","grey","orange","purple" ))
+
